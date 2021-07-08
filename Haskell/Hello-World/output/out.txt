@@ -1,2 +1,0 @@
-root@localhost:/home/Ch4r0nN/Learning/Haskell/Hello-World# ./hello
-Hello world
