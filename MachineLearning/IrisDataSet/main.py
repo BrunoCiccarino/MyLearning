@@ -19,10 +19,3 @@ species = knn.predict([[5.1, 3.5, 1.4, 0.2],
  [4.9, 3, 1.4, 0.2]]) 
 
 print(iris.target_names[species])
-
-
-
-
-
-
-
