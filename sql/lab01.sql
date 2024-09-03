@@ -69,18 +69,19 @@ insert into loja.venda(
 
 select * from loja.venda where valor_total > 100;
 
-alter table loja.venda add column estado varchar (30);
+alter table loja.venda add column estado enum('Pendente', 'Pago', 'Cancelado');
 
 update loja.venda
 	set estado = 'Pendente'
 	where _id = 1;
-update loja.venda
-    set estado = 'Pago'
-    where _id = 2;
-update loja.venda
-    set estado = 'Cancelado'
-	where _id = 3;
     
+update loja.venda
+	set estado = 'Pago'
+	where _id = 2;
+update loja.venda
+	set estado = 'Cancelado'
+	where _id = 3;
+
 select estado from loja.venda where estado = 'Pago';
 
 create table loja.produto(
