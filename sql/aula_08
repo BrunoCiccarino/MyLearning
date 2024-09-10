@@ -1,0 +1,80 @@
+-- DROP DATABASE IF EXISTS aula_08;
+CREATE DATABASE IF NOT EXISTS aula_08;
+
+
+USE aula_08;
+
+CREATE TABLE IF NOT EXISTS categoria (
+    _id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS produto (
+    _id SERIAL PRIMARY KEY,
+    nome VARCHAR (100) NOT NULL,
+    preco DECIMAL (10,2) NOT NULL,
+    categoria_fk BIGINT UNSIGNED,
+    FOREIGN KEY (categoria_fk) REFERENCES categoria(_id)
+);
+
+CREATE TEMPORARY TABLE IF NOT EXISTS temp_produto (
+    _id SERIAL PRIMARY KEY,
+    nome_produto VARCHAR(100),
+    preco DECIMAL(10,2),
+    nome_categoria VARCHAR(100)
+);
+
+-- SHOW VARIABLES LIKE 'secure_file_priv';
+
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\aula_08_produtos.csv'
+    INTO TABLE temp_produto
+    FIELDS TERMINATED BY ';'
+    LINES TERMINATED BY '\r\n'
+    IGNORE 1 ROWS
+    (nome_produto, preco, nome_categoria);
+    
+SELECT * FROM temp_produto;
+
+INSERT INTO categoria(nome)
+SELECT DISTINCT nome_categoria
+FROM temp_produto;
+
+SELECT * FROM categoria;
+
+INSERT INTO produto(nome, preco, categoria_fk)
+SELECT tp.nome_produto, tp.preco, c._id
+FROM temp_produto tp
+JOIN categoria c ON tp.nome_categoria = c.nome;
+
+SELECT * FROM produto;
+
+SELECT
+FROM produto p
+JOIN categoria c ON p.categoria_fk = c._id
+ORDER BY p._id;
+
+DROP TEMPORARY TABLE IF EXISTS temp_produto;
+
+--------------------------------------------------------------------------------------------------------------
+-- 1. Liste todos os produtos e seus preços
+
+SELECT nome, preco
+FROM produto;
+
+-- 2. Liste todos os produtos, preços e nomes de categoria
+
+SELECT p._id, p.nome, p.preco, c.nome
+FROM produto p
+JOIN categoria c ON p.categoria_fk = c._id
+ORDER BY p._id;
+
+-- 03. Liste todos os produtos que custam mais de 50 reais
+SELECT nome, preco
+FROM produto
+WHERE preco > 50;
+ 
+-- 04. Liste todos os produtos da categoria "Roupas"
+SELECT p.nome, c.nome
+FROM produto p
+JOIN categoria c ON p.categoria_fk = c._id
+WHERE c.nome = 'Roupas';
